@@ -1,4 +1,12 @@
-# Uso Rapido
+# Uso rápido
+
+## Setup
+
+Iniciar "Arduino Ide",
+1) Tools->Board->Boards Manager->Esp32 by Espressif Systems (NO EL DE ARDUINO).
+2) Sketch->include library->add .ZIP Library->Seleccionar el archivo .zip incluido.
+
+## Uso
 
 ## 1) Incluir la libreria
 
@@ -28,3 +36,5 @@ if (st.connected()) {
 String getResp = secure.get("https://httpbin.org/get");
 String postResp = secure.post("https://httpbin.org/post", "{\"hello\":\"world\"}");
 ```
+
+### Referirse a "Connection Example" ante cualquier duda.
