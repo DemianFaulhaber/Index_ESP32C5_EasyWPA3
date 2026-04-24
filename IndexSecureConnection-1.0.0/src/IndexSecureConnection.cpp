@@ -23,8 +23,8 @@ void IndexSecureConnection::copyField(char *dst, size_t dstSize, const char *src
 bool IndexSecureConnection::begin(const char *ssid,
                                   const char *identity,
                                   const char *password,
-                                  const char *cl_cert,
-                                  const char *cl_key,
+                                  const unsigned char *cl_cert,
+                                  const unsigned char *cl_key,
                                   size_t cl_cert_len,
                                   size_t cl_key_len) {
     if (!ssid) {
@@ -35,20 +35,12 @@ bool IndexSecureConnection::begin(const char *ssid,
     copyField(creds_.EAP_PASSWORD, sizeof(creds_.EAP_PASSWORD), password);
     
   
-    size_t resolved_cert_len = cl_cert_len;
-    size_t resolved_key_len = cl_key_len;
+    // Note: DER binary data - do not use strlen; length must be provided by caller
 
-    if (cl_cert && resolved_cert_len == 0) {
-        resolved_cert_len = strlen(cl_cert);
-    }
-    if (cl_key && resolved_key_len == 0) {
-        resolved_key_len = strlen(cl_key);
-    }
-
-    creds_.cl_cert = (char *)cl_cert;
-    creds_.cl_key = (char *)cl_key;
-    creds_.cl_cert_len = (int)resolved_cert_len;
-    creds_.cl_key_len = (int)resolved_key_len;
+    creds_.cl_cert = cl_cert;
+    creds_.cl_key = cl_key;
+    creds_.cl_cert_len = (int)cl_cert_len;
+    creds_.cl_key_len = (int)cl_key_len;
 
 
     start_connection_process(&creds_);

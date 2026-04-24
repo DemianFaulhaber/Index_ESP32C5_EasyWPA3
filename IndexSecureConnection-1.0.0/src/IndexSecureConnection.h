@@ -34,8 +34,8 @@ public:
     bool begin(const char *ssid,
                const char *identity = nullptr,
                const char *password = nullptr,
-               const char *cl_cert = nullptr,
-               const char *cl_key = nullptr,
+               const unsigned char *cl_cert = nullptr,
+               const unsigned char *cl_key = nullptr,
                size_t cl_cert_len = 0,
                size_t cl_key_len = 0);
     Status status() const;

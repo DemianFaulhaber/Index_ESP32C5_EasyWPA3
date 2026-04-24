@@ -1,41 +1,31 @@
 #include <IndexSecureConnection.h>
-#include "nvs_flash.h"
-#include "esp_event.h"
-#include "esp_netif.h"
+#include "client_cert_der.h"   // generado con: xxd -i client_cert.der > client_cert_der.h
+#include "client_key_der.h"    // generado con: xxd -i client_key.der  > client_key_der.h
 
 IndexSecureConnection secure;
 
+// El ssid se asigna independientemente del metodo EAP.
 const char *ssid = "ToT_GWNBF1B90";
 const char *identity = "admin";
+
+// En caso de trabajar con EAP-PEAP el procedimiento es sencillo y es el siguiente.
 const char *password = "zRBmsF6n";
+
 
 void setup() {
   Serial.begin(115200);
-  delay(3000);
-  Serial.println("\n\n=== BOOT ===");
+  
+  // En caso de trabajar con EAP-TLS, los headers generados por xxd -i exponen:
+  //   unsigned char <nombre>[]      -> array con los bytes del DER
+  //   unsigned int  <nombre>_len    -> largo en bytes
+  // Los nombres dependen del path que le pasaste a xxd, ajustar si difieren.
+  //IMPORTANTE, DEBE ESTAR DENTRO DEL SETUP
+  const unsigned char *cl_cert     = certs_client_cert_der;
+  const size_t         cl_cert_len = certs_client_cert_der_len;
+  const unsigned char *cl_key      = certs_client_key_der;
+  const size_t         cl_key_len  = certs_client_key_der_len;
 
-  Serial.println("[1] NVS init...");
-  esp_err_t ret = nvs_flash_init();
-  if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
-      ESP_ERROR_CHECK(nvs_flash_erase());
-      ret = nvs_flash_init();
-  }
-  ESP_ERROR_CHECK(ret);
-  Serial.println("[1] OK");
-
-  Serial.println("[2] netif init...");
-  esp_netif_init();
-  Serial.println("[2] OK");
-
-  Serial.println("[3] event loop...");
-  esp_err_t loop_err = esp_event_loop_create_default();
-  if (loop_err != ESP_OK && loop_err != ESP_ERR_INVALID_STATE) {
-    ESP_ERROR_CHECK(loop_err);
-  }
-  Serial.println("[3] OK");
-
-  Serial.println("[4] Conectando WiFi...");
-  if (!secure.begin(ssid, identity, password)) {
+  if (!secure.begin(ssid, identity, password, cl_cert, cl_key, cl_cert_len, cl_key_len)) {
     auto st = secure.status();
     Serial.print("Error conectando: ");
     Serial.println(st.error);
@@ -45,8 +35,12 @@ void setup() {
   auto st = secure.status();
   Serial.print("Conectado. IP: ");
   Serial.println(st.ip);
+
+  String response = secure.get("https://httpbin.org/get");
+  Serial.println(response);
 }
 
 void loop() {
 
 }
+
