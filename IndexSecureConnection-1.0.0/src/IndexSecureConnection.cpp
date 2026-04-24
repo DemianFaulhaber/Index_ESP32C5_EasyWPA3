@@ -20,10 +20,36 @@ void IndexSecureConnection::copyField(char *dst, size_t dstSize, const char *src
     dst[dstSize - 1] = '\0';
 }
 
-bool IndexSecureConnection::begin(const char *ssid, const char *identity, const char *password) {
-    copyField(creds_.WIFI_SSID, sizeof(creds_.WIFI_SSID), ssid);
+bool IndexSecureConnection::begin(const char *ssid,
+                                  const char *identity,
+                                  const char *password,
+                                  const char *cl_cert,
+                                  const char *cl_key,
+                                  size_t cl_cert_len,
+                                  size_t cl_key_len) {
+    if (!ssid) {
+        return false;
+    }
+    copyField(creds_.WIFI_SSID, sizeof(creds_.WIFI_SSID), ssid);  
     copyField(creds_.EAP_IDENTITY, sizeof(creds_.EAP_IDENTITY), identity);
     copyField(creds_.EAP_PASSWORD, sizeof(creds_.EAP_PASSWORD), password);
+    
+  
+    size_t resolved_cert_len = cl_cert_len;
+    size_t resolved_key_len = cl_key_len;
+
+    if (cl_cert && resolved_cert_len == 0) {
+        resolved_cert_len = strlen(cl_cert);
+    }
+    if (cl_key && resolved_key_len == 0) {
+        resolved_key_len = strlen(cl_key);
+    }
+
+    creds_.cl_cert = (char *)cl_cert;
+    creds_.cl_key = (char *)cl_key;
+    creds_.cl_cert_len = (int)resolved_cert_len;
+    creds_.cl_key_len = (int)resolved_key_len;
+
 
     start_connection_process(&creds_);
     return get_status() == 'C';

@@ -31,7 +31,13 @@ public:
 
     IndexSecureConnection();
 
-    bool begin(const char *ssid, const char *identity, const char *password);
+    bool begin(const char *ssid,
+               const char *identity = nullptr,
+               const char *password = nullptr,
+               const char *cl_cert = nullptr,
+               const char *cl_key = nullptr,
+               size_t cl_cert_len = 0,
+               size_t cl_key_len = 0);
     Status status() const;
     bool ipAddress(char *outBuffer, size_t outLen) const;
 

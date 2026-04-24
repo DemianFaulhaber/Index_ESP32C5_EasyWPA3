@@ -81,12 +81,25 @@ esp_err_t WIFI_SETUP_init(credentials *creds, esp_ip4_addr_t *ip_out) {
     ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &wifi_config));
 
     // Configuración de identidad para el servidor RADIUS
-    ESP_ERROR_CHECK(esp_eap_client_set_eap_methods(ESP_EAP_TYPE_ALL));
-    ESP_ERROR_CHECK(esp_eap_client_set_identity((uint8_t *)creds->EAP_IDENTITY, strlen(creds->EAP_IDENTITY)));
-    ESP_ERROR_CHECK(esp_eap_client_set_username((uint8_t *)creds->EAP_IDENTITY, strlen(creds->EAP_IDENTITY)));
-    ESP_ERROR_CHECK(esp_eap_client_set_password((uint8_t *)creds->EAP_PASSWORD, strlen(creds->EAP_PASSWORD)));
+    if(creds->cl_cert == nullptr && creds->cl_key == nullptr){
+      ESP_ERROR_CHECK(esp_eap_client_set_eap_methods(ESP_EAP_TYPE_ALL));
+      ESP_ERROR_CHECK(esp_eap_client_set_identity((uint8_t *)creds->EAP_IDENTITY, strlen(creds->EAP_IDENTITY)));
+      ESP_ERROR_CHECK(esp_eap_client_set_username((uint8_t *)creds->EAP_IDENTITY, strlen(creds->EAP_IDENTITY)));
+      ESP_ERROR_CHECK(esp_eap_client_set_password((uint8_t *)creds->EAP_PASSWORD, strlen(creds->EAP_PASSWORD)));
+    }
+    else{
+      ESP_ERROR_CHECK(esp_eap_client_set_eap_methods(ESP_EAP_TYPE_TSL));
+      try(
+        ESP_ERROR_CHECK(esp_eap_client_set_certifcate_and_key(
+            (uint8_t *)creds->cl_cert, creds->cl_cert_len,
+            (uint8_t *)creds->cl_key, creds->cl_key_len
+         )
+      catch(
+        ESP_LOGE(TAG, "Error configurando certificado y clave para EAP-TLS");
+        return ESP_FAIL;
+      ));
+    }
     ESP_ERROR_CHECK(esp_eap_client_set_disable_time_check(true));
-    
     // Registramos el event handler para conectar y obtener IP
     ESP_ERROR_CHECK(esp_event_handler_register(WIFI_EVENT, ESP_EVENT_ANY_ID, &wifi_event_handler, ip_out));
     ESP_ERROR_CHECK(esp_event_handler_register(IP_EVENT, IP_EVENT_STA_GOT_IP, &wifi_event_handler, ip_out));

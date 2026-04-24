@@ -7,6 +7,10 @@ typedef struct {
     char WIFI_SSID[64];
     char EAP_IDENTITY[64];
     char EAP_PASSWORD[246];
+    char *cl_cert; 
+    int cl_cert_len;
+    char *cl_key;
+    int cl_key_len;  
 } credentials;
 
 // Prototipo de la función de inicialización
