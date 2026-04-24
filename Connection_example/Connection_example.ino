@@ -5,11 +5,11 @@
 IndexSecureConnection secure;
 
 // El ssid se asigna independientemente del metodo EAP.
-const char *ssid = "TU_SSID";
+const char *ssid = "ToT_GWNBF1B90";
+const char *identity = "admin";
 
 // En caso de trabajar con EAP-PEAP el procedimiento es sencillo y es el siguiente.
-const char *identity = "TU_IDENTIDAD_EAP";
-const char *password = "TU_PASSWORD_EAP";
+const char *password = "zRBmsF6n";
 
 
 void setup() {
@@ -20,10 +20,10 @@ void setup() {
   //   unsigned int  <nombre>_len    -> largo en bytes
   // Los nombres dependen del path que le pasaste a xxd, ajustar si difieren.
   //IMPORTANTE, DEBE ESTAR DENTRO DEL SETUP
-  const char  *cl_cert     = reinterpret_cast<const char *>(certs_client_cert_der);
-  const size_t cl_cert_len = static_cast<size_t>(certs_client_cert_der_len);
-  const char  *cl_key      = reinterpret_cast<const char *>(certs_client_key_der);
-  const size_t cl_key_len  = static_cast<size_t>(certs_client_key_der_len);
+  const unsigned char *cl_cert     = certs_client_cert_der;
+  const size_t         cl_cert_len = certs_client_cert_der_len;
+  const unsigned char *cl_key      = certs_client_key_der;
+  const size_t         cl_key_len  = certs_client_key_der_len;
 
   if (!secure.begin(ssid, identity, password, cl_cert, cl_key, cl_cert_len, cl_key_len)) {
     auto st = secure.status();
