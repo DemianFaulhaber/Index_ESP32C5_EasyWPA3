@@ -1,15 +1,5 @@
 # Uso rápido
 
-## WPA3 192 para usuarios que lo necesiten
-
-Si el usuario final necesita WPA3-Enterprise 192-bit (Suite-B), usar tambien el paquete en `Core_WPA3_192_Addon/` ademas de la libreria.
-
-Resumen rapido:
-- Libreria sola: uso normal.
-- Libreria + `Core_WPA3_192_Addon/`: para build con `CONFIG_ESP_WIFI_SUITE_B_192=y`.
-
-Para Arduino IDE puro: usa los scripts de `Core_WPA3_192_Addon/` para crear un core custom local con Suite-B 192.
-
 ## Setup
 
 Iniciar "Arduino Ide",
