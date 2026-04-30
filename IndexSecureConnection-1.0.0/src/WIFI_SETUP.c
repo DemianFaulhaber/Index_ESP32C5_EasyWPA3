@@ -82,7 +82,7 @@ esp_err_t WIFI_SETUP_init(credentials *creds, esp_ip4_addr_t *ip_out) {
         .sta = {
             .scan_method = WIFI_ALL_CHANNEL_SCAN,
             .sort_method = WIFI_CONNECT_AP_BY_SIGNAL,
-            .threshold.authmode = WIFI_AUTH_WPA3_ENTERPRISE,
+            .threshold.authmode = WIFI_AUTH_WPA3_ENT_192BIT,
             .pmf_cfg = {
                 .capable = true,
                 .required = true,
