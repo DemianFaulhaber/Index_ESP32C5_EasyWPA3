@@ -1,3 +1,4 @@
+#include <sdkconfig.h>
 #include <IndexSecureConnection.h>
 #include "client_cert_der.h"   // generado con: xxd -i client_cert.der > client_cert_der.h
 #include "client_key_der.h"    // generado con: xxd -i client_key.der  > client_key_der.h
@@ -10,10 +11,15 @@ const char *identity = "admin";
 
 // En caso de trabajar con EAP-PEAP el procedimiento es sencillo y es el siguiente.
 const char *password = "zRBmsF6n";
-
+//ads
 
 void setup() {
   Serial.begin(115200);
+  #ifdef CONFIG_WPA_SUITE_B_192
+    Serial.println("¡ÉXITO! Core personalizado detectado. CONFIG_WPA_SUITE_B_192 está activo.");
+  #else
+    Serial.println("ERROR: No se detecta el flag de 192-bits. Estás usando el core estándar.");
+  #endif
   
   // En caso de trabajar con EAP-TLS, los headers generados por xxd -i exponen:
   //   unsigned char <nombre>[]      -> array con los bytes del DER

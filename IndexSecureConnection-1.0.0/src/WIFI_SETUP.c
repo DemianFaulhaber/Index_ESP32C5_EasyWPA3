@@ -28,7 +28,7 @@ static const char *wifi_reason_to_str(uint8_t reason)
         case WIFI_REASON_NO_AP_FOUND_W_COMPATIBLE_SECURITY: return "NO_AP_FOUND_COMPATIBLE_SECURITY(210)";
         case WIFI_REASON_NO_AP_FOUND_IN_AUTHMODE_THRESHOLD: return "NO_AP_FOUND_AUTHMODE_THRESHOLD(211)";
         case WIFI_REASON_802_1X_AUTH_FAILED: return "802_1X_AUTH_FAILED(23)";
-        default: return "OTHER";
+        default: return reason;
     }
 }
 
@@ -82,7 +82,7 @@ esp_err_t WIFI_SETUP_init(credentials *creds, esp_ip4_addr_t *ip_out) {
         .sta = {
             .scan_method = WIFI_ALL_CHANNEL_SCAN,
             .sort_method = WIFI_CONNECT_AP_BY_SIGNAL,
-            .threshold.authmode = WIFI_AUTH_WPA3_ENT_192BIT,
+            .threshold.authmode = WIFI_AUTH_WPA3_ENT_192,
             .pmf_cfg = {
                 .capable = true,
                 .required = true,
