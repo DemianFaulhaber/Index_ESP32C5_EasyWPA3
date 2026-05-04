@@ -28,7 +28,7 @@ static const char *wifi_reason_to_str(uint8_t reason)
         case WIFI_REASON_NO_AP_FOUND_W_COMPATIBLE_SECURITY: return "NO_AP_FOUND_COMPATIBLE_SECURITY(210)";
         case WIFI_REASON_NO_AP_FOUND_IN_AUTHMODE_THRESHOLD: return "NO_AP_FOUND_AUTHMODE_THRESHOLD(211)";
         case WIFI_REASON_802_1X_AUTH_FAILED: return "802_1X_AUTH_FAILED(23)";
-        default: return "OTHER";
+        default: return reason;
     }
 }
 
@@ -62,7 +62,7 @@ static void wifi_event_handler(void *arg, esp_event_base_t event_base,
 
 
 
-esp_err_t WIFI_SETUP_init(credentials *creds, esp_ip4_addr_t *ip_out) {
+esp_err_t WIFI_SETUP_init(credentials *creds, esp_ip4_addr_t *ip_out, bool AES) {
     s_wifi_event_group = xEventGroupCreate();
     ESP_ERROR_CHECK(esp_netif_init());
     ESP_ERROR_CHECK(esp_event_loop_create_default());
@@ -82,13 +82,13 @@ esp_err_t WIFI_SETUP_init(credentials *creds, esp_ip4_addr_t *ip_out) {
         .sta = {
             .scan_method = WIFI_ALL_CHANNEL_SCAN,
             .sort_method = WIFI_CONNECT_AP_BY_SIGNAL,
-            .threshold.authmode = WIFI_AUTH_WPA3_ENTERPRISE,
             .pmf_cfg = {
                 .capable = true,
                 .required = true,
             },
         },
     };
+    AES ? wifi_config.sta.authmode.threshold = WIFI_AUTH_WPA3_ENT_192_BIT : wifi_config.sta.authmode.threshold = WIFI_AUTH_WPA2_ENT;
     memcpy(wifi_config.sta.ssid, creds->WIFI_SSID, strlen(creds->WIFI_SSID));
     
     ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &wifi_config));

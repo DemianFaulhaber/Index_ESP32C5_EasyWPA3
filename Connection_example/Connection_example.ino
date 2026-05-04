@@ -1,3 +1,4 @@
+#include <sdkconfig.h>
 #include <IndexSecureConnection.h>
 #include "client_cert_der.h"   // generado con: xxd -i client_cert.der > client_cert_der.h
 #include "client_key_der.h"    // generado con: xxd -i client_key.der  > client_key_der.h
@@ -10,10 +11,15 @@ const char *identity = "admin";
 
 // En caso de trabajar con EAP-PEAP el procedimiento es sencillo y es el siguiente.
 const char *password = "zRBmsF6n";
-
+//ads
 
 void setup() {
   Serial.begin(115200);
+  #ifdef CONFIG_WPA_SUITE_B_192
+  constexpr bool AES256 = true;
+  #else
+  constexpr bool AES256 = false;
+  #endif
   
   // En caso de trabajar con EAP-TLS, los headers generados por xxd -i exponen:
   //   unsigned char <nombre>[]      -> array con los bytes del DER
@@ -25,7 +31,7 @@ void setup() {
   const unsigned char *cl_key      = certs_client_key_der;
   const size_t         cl_key_len  = certs_client_key_der_len;
 
-  if (!secure.begin(ssid, identity, password, cl_cert, cl_key, cl_cert_len, cl_key_len)) {
+  if (!secure.begin(ssid, identity, password, cl_cert, cl_key, cl_cert_len, cl_key_len, AES256)) {
     auto st = secure.status();
     Serial.print("Error conectando: ");
     Serial.println(st.error);
