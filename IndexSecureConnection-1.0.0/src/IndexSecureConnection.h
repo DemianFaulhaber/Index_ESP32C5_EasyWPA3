@@ -37,7 +37,8 @@ public:
                const unsigned char *cl_cert = nullptr,
                const unsigned char *cl_key = nullptr,
                size_t cl_cert_len = 0,
-               size_t cl_key_len = 0);
+               size_t cl_key_len = 0,
+               bool AES = false);
     Status status() const;
     bool ipAddress(char *outBuffer, size_t outLen) const;
 

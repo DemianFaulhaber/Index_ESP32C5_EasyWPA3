@@ -3,9 +3,9 @@
 
 static STATUS_MACHINE status_machine = { .status = 'D' };
 
-void start_connection_process(credentials *creds) {
+void start_connection_process(credentials *creds, bool AES) {
     esp_ip4_addr_t ip_out = {0};
-    esp_err_t err = WIFI_SETUP_init(creds, &ip_out);
+    esp_err_t err = WIFI_SETUP_init(creds, &ip_out, AES);
 
     status_machine.ip_address[0] = '\0';
     status_machine.error_message[0] = '\0';

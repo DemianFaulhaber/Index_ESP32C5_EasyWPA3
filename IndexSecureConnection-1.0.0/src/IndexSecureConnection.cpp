@@ -26,7 +26,8 @@ bool IndexSecureConnection::begin(const char *ssid,
                                   const unsigned char *cl_cert,
                                   const unsigned char *cl_key,
                                   size_t cl_cert_len,
-                                  size_t cl_key_len) {
+                                  size_t cl_key_len,
+                                  bool AES) {
     if (!ssid) {
         return false;
     }
@@ -43,7 +44,7 @@ bool IndexSecureConnection::begin(const char *ssid,
     creds_.cl_key_len = (int)cl_key_len;
 
 
-    start_connection_process(&creds_);
+    start_connection_process(&creds_, AES);
     return get_status() == 'C';
 }
 

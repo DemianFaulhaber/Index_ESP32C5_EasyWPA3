@@ -15,6 +15,6 @@ typedef struct {
 
 // Prototipo de la función de inicialización
 
-esp_err_t WIFI_SETUP_init(credentials *creds, esp_ip4_addr_t *ip_out);
+esp_err_t WIFI_SETUP_init(credentials *creds, esp_ip4_addr_t *ip_out, bool AES);
 
 #endif

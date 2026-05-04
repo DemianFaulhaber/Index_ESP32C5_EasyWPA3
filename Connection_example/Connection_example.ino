@@ -16,9 +16,9 @@ const char *password = "zRBmsF6n";
 void setup() {
   Serial.begin(115200);
   #ifdef CONFIG_WPA_SUITE_B_192
-    Serial.println("¡ÉXITO! Core personalizado detectado. CONFIG_WPA_SUITE_B_192 está activo.");
+  constexpr bool AES256 = true;
   #else
-    Serial.println("ERROR: No se detecta el flag de 192-bits. Estás usando el core estándar.");
+  constexpr bool AES256 = false;
   #endif
   
   // En caso de trabajar con EAP-TLS, los headers generados por xxd -i exponen:
@@ -31,7 +31,7 @@ void setup() {
   const unsigned char *cl_key      = certs_client_key_der;
   const size_t         cl_key_len  = certs_client_key_der_len;
 
-  if (!secure.begin(ssid, identity, password, cl_cert, cl_key, cl_cert_len, cl_key_len)) {
+  if (!secure.begin(ssid, identity, password, cl_cert, cl_key, cl_cert_len, cl_key_len, AES256)) {
     auto st = secure.status();
     Serial.print("Error conectando: ");
     Serial.println(st.error);
